@@ -22,7 +22,7 @@ using the [Customer Personality Analysis](https://www.kaggle.com/datasets/imakas
 
 ## Data pipeline
 
-`src/data_processing.py` replicates the original R cleaning steps:
+`src/data_processing.ipynb`:
 - Merges rare marital-status labels (`Alone`, `Absurd`, `YOLO`) into `Single`
 - Recodes education levels into plain-language categories
 - Derives `age` from birth year (drops 3 implausible outliers > 100)
@@ -47,8 +47,8 @@ significant at α = 0.05 — consistent with the original R analysis.
 | Gradient Boosting | ~0.84 |
 | Logistic Regression (L1) | ~0.78 |
 | Logistic Regression | ~0.78 |
-| KNN | ~0.74 |
-| Decision Tree | ~0.69 |
+| KNN | ~0.73 |
+| Decision Tree | ~0.71 |
 
 Random Forest wins and is evaluated on the test set at a 0.19
 probability threshold (chosen, as in the original analysis, to favor
@@ -62,21 +62,28 @@ a high-spending, high-income segment with few children; a
 lower-income segment with more children and lower spend across every
 category; and a middle segment with above-average wine spend and the
 highest average age.
-
 ## Setup
 
 ```bash
 pip install -r requirements.txt
-python src/main.py
 ```
 
-Or run each stage independently:
+Then open and run the notebooks in order:
+
+```
+src/data_processing.ipynb     # clean + engineer features
+src/statistical_tests.ipynb   # bivariate significance tests
+src/model_comparison.ipynb    # compare classifiers, evaluate the best
+src/clustering.ipynb          # cluster + profile campaign acceptors
+```
+
+Each notebook can also be run as a standalone script if preferred:
 
 ```bash
-python src/data_processing.py     # clean + engineer features
-python src/statistical_tests.py   # bivariate significance tests
-python src/model_comparison.py    # compare classifiers, evaluate the best
-python src/clustering.py          # cluster + profile campaign acceptors
+python src/data_processing.py
+python src/statistical_tests.py
+python src/model_comparison.py
+python src/clustering.py
 ```
 
 Plots are saved to `output/` and also shown interactively.
@@ -84,16 +91,21 @@ Plots are saved to `output/` and also shown interactively.
 ## Project structure
 
 ```
-customer-type-ml-analysis/
+Customer Analysis Machine Learning Project/
 ├── data/
+│   ├── processed/
+│   │   └── customer_personality_cleaned.csv
 │   └── customer_personality.csv
-├── output/                       # generated plots
+├── output/                          # generated plots
 ├── src/
-│   ├── data_processing.py        # cleaning + feature engineering
-│   ├── statistical_tests.py      # chi-square + ANOVA tests
-│   ├── model_comparison.py       # classifier comparison + evaluation
-│   ├── clustering.py             # K-means + cluster profiling
-│   └── main.py                   # runs the full pipeline
+│   ├── data_processing.ipynb        # cleaning + feature engineering
+│   ├── data_processing.py
+│   ├── statistical_tests.ipynb      # chi-square + ANOVA tests
+│   ├── statistical_tests.py
+│   ├── model_comparison.ipynb       # classifier comparison + evaluation
+│   ├── model_comparison.py
+│   ├── clustering.ipynb             # K-means + cluster profiling
+│   └── clustering.py
 ├── requirements.txt
 └── README.md
 ```
